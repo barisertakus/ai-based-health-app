@@ -35,6 +35,19 @@ const Login = ({ navigation }) => {
               <Text style={styles.textPassword}>Şifremi Unuttum</Text>
             </TouchableOpacity>
           </View>
+          {/* 
+          <View>
+            <FontAwesome name="facebook-square" size={24} />
+            <FontAwesome name="google" size={24} />
+          </View> */}
+        </View>
+        <View style={styles.footer}>
+          <View style={styles.register}>
+            <Text style={styles.registerText}>Yeni misiniz? Kaydolun</Text>
+          </View>
+          <TouchableOpacity style={styles.loginBtn}>
+            <Text style={styles.loginText}>Giriş</Text>
+          </TouchableOpacity>
         </View>
       </ImageBackground>
     </View>
@@ -48,7 +61,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   smallContainer: {
-    flex: 0.75,
+    flex: 0.85,
     justifyContent: "flex-end",
   },
   image: {
@@ -69,5 +82,34 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     paddingRight: 10,
     fontWeight: "bold",
+  },
+  footer: {
+    marginTop: "auto",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 20,
+    paddingBottom: 25,
+    paddingRight: 30,
+  },
+  register: {
+    paddingTop: 50
+  },
+  registerText: {
+    color: "white",
+    fontSize: 17,
+  },
+  loginBtn: {
+    borderWidth: 1.5,
+    borderColor: "white",
+    borderRadius: 10,
+    width: 160,
+    height: 65,
+    justifyContent: "center"
+  },
+  loginText: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "400",
+    textAlign: "center",
   },
 });
