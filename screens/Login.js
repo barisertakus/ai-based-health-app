@@ -1,15 +1,28 @@
-import React, { useLayoutEffect } from "react";
+import axios from "axios";
+import React, { useLayoutEffect, useState } from "react";
 import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
 import { Icon, Input } from "react-native-elements";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { FontAwesome } from "react-native-vector-icons";
-// import loginBackground from "../assets/images/login-background.png"
+import deviceStorage from '../utils/deviceStorage'
 
-// const loginBackgroundUri = Image.resolveAssetSource(loginBackground).uri;
-const image = require("./login-background.png");
-// console.log(loginBackground)
+const image = require("../assets/images/login-background.png");
+
 
 const Login = ({ navigation }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const login = () => {
+    axios
+      .post("http://localhost:8080/api/auth/login", { username, password })
+      .then((response) => {
+        console.log(response.data)
+        deviceStorage.saveItem("token", response.data.token)
+      })
+      .catch((error) => console.log(error));
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -23,14 +36,21 @@ const Login = ({ navigation }) => {
           <Text style={styles.header}>Giriş</Text>
           <View style={styles.inputs}>
             <Input
-              placeholder="Email"
-              leftIcon={<Icon name="email" size={24} color="#2F80ED" />}
+              value={username}
+              onChangeText={setUsername}
+              placeholder="Kullanıcı Adı"
+              leftIcon={<Icon name="person" size={24} color="#2F80ED" />}
+              autoCapitalize="none"
             />
             <Input
+              value={password}
+              onChangeText={setPassword}
               placeholder="Şifre"
               secureTextEntry
               leftIcon={<Icon name="lock" size={24} color="#2F80ED" />}
+              autoCapitalize="none"
             />
+
             <TouchableOpacity>
               <Text style={styles.textPassword}>Şifremi Unuttum</Text>
             </TouchableOpacity>
@@ -42,10 +62,10 @@ const Login = ({ navigation }) => {
           </View> */}
         </View>
         <View style={styles.footer}>
-          <View style={styles.register}>
+          <TouchableOpacity style={styles.register}>
             <Text style={styles.registerText}>Yeni misiniz? Kaydolun</Text>
-          </View>
-          <TouchableOpacity style={styles.loginBtn}>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.loginBtn} onPress={login}>
             <Text style={styles.loginText}>Giriş</Text>
           </TouchableOpacity>
         </View>
@@ -92,7 +112,7 @@ const styles = StyleSheet.create({
     paddingRight: 30,
   },
   register: {
-    paddingTop: 50
+    paddingTop: 50,
   },
   registerText: {
     color: "white",
@@ -104,7 +124,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 160,
     height: 65,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   loginText: {
     color: "white",
