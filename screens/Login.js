@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useLayoutEffect, useState } from "react";
 import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
 import { Icon, Input } from "react-native-elements";
+import { ScreenWidth } from "react-native-elements/dist/helpers";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { FontAwesome } from "react-native-vector-icons";
 import deviceStorage from '../utils/deviceStorage'
@@ -62,9 +63,12 @@ const Login = ({ navigation }) => {
           </View> */}
         </View>
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.register}>
-            <Text style={styles.registerText}>Yeni misiniz? Kaydolun</Text>
+          <View style={styles.register}>
+            <Text style={styles.registerText}>Yeni misiniz?</Text>
+            <TouchableOpacity onPress={()=>navigation.navigate("register")}>
+            <Text style={styles.registerTextBold}> Kaydolun</Text>
           </TouchableOpacity>
+          </View>
           <TouchableOpacity style={styles.loginBtn} onPress={login}>
             <Text style={styles.loginText}>Giriş</Text>
           </TouchableOpacity>
@@ -81,8 +85,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   smallContainer: {
-    flex: 0.85,
-    justifyContent: "flex-end",
+    paddingTop: "65%",
+    flex: 1,
+    justifyContent: "center",
   },
   image: {
     flex: 1,
@@ -90,7 +95,7 @@ const styles = StyleSheet.create({
   header: {
     paddingLeft: 20,
     fontSize: 35,
-    fontWeight: "600",
+    fontWeight: "700",
     color: "#2F80ED",
   },
   inputs: {
@@ -108,21 +113,27 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 20,
-    paddingBottom: 25,
-    paddingRight: 30,
+    paddingBottom: 20,
+    paddingRight: 20,
   },
   register: {
     paddingTop: 50,
+    flexDirection: "row",
   },
   registerText: {
     color: "white",
     fontSize: 17,
   },
+  registerTextBold: {
+    color: "white",
+    fontSize: 17,
+    fontWeight: "bold"
+  },
   loginBtn: {
     borderWidth: 1.5,
     borderColor: "white",
     borderRadius: 10,
-    width: 160,
+    width: ScreenWidth * 0.35,
     height: 65,
     justifyContent: "center",
   },
