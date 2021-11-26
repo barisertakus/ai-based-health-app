@@ -8,12 +8,12 @@ const ProfileCard = () => {
     <CardContainer containerStyle={styles.cardContainer}>
       <Avatar
         rounded
-        source={require("../assets/images/avatar-profile.jpeg")}
+        source={require("../../assets/images/avatar-profile.jpeg")}
         size={120}
         containerStyle={{borderWidth: 3, borderColor: "white"}}
       />
       <Text style={styles.profileName}>Can Yüzkollar </Text>
-      <Image source={require("../assets/images/graph-profile.png")} />
+      <Image source={require("../../assets/images/graph-profile.png")} />
     </CardContainer>
   );
 };
