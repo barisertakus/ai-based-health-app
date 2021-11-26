@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     borderRadius: 20,
-    margin: 15,
+    margin: 20,
     padding: 15,
     shadowColor: "#000",
     shadowOffset: {
