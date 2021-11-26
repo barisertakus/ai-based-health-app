@@ -36,11 +36,7 @@ const BottomNavigation = () => {
           options={{
             tabBarLabel: "Home",
             tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons
-                name="heart-pulse"
-                color={color}
-                size={35}
-              />
+              <MaterialCommunityIcons name="heart-pulse" color={color} size={30} />
             ),
           }}
         />
@@ -49,8 +45,8 @@ const BottomNavigation = () => {
           component={Screen2}
           options={{
             tabBarLabel: "screen2",
-            tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="poll" color={color} size={35} />
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="poll" color={color} size={30} />
             ),
           }}
         />
@@ -60,8 +56,8 @@ const BottomNavigation = () => {
           component={Screen1}
           options={{
             tabBarLabel: "Account",
-            tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="account" color={color} size={35} />
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="compass" color={color} size={30} />
             ),
           }}
         />
@@ -71,7 +67,7 @@ const BottomNavigation = () => {
           options={{
             tabBarLabel: "Profile",
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="compass" color={color} size={35} />
+              <MaterialCommunityIcons name="account" color={color} size={30} />
             ),
           }}
         />
