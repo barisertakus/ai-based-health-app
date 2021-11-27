@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 
 const CardContainer = ({children, containerStyle}) => {
   return (
-    <View style={{...styles.container, ...containerStyle}}>
+    <View style={[styles.container, containerStyle]}>
       {children}
     </View>
   )

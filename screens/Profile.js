@@ -1,9 +1,10 @@
 import React, { useLayoutEffect } from "react";
-import { StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ProfileCard from "../components/Card/ProfileCard"
+import ProfileCard from "../components/Card/ProfileCard";
 import ProfileHeader from "../components/ProfileHeader";
 import AgeCard from "../components/Card/AgeCard";
+import ProfileStats from "../components/Card/ProfileStats";
 
 const Profile = ({ navigation }) => {
   useLayoutEffect(() => {
@@ -11,13 +12,16 @@ const Profile = ({ navigation }) => {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#E5E5E5" }}>
-      <ProfileHeader />
-      <ProfileCard />
-      <AgeCard />
-      {/* -cards- */}
-      {/* age card */}
-      {/* heart rate cards */}
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <ProfileHeader />
+        <ProfileCard />
+        <AgeCard />
+        <ProfileStats />
+        {/* -cards- */}
+        {/* age card */}
+        {/* heart rate cards */}
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -25,7 +29,8 @@ const Profile = ({ navigation }) => {
 export default Profile;
 
 const styles = StyleSheet.create({
-  profile:{
-
+  container: {
+    flex: 1,
+    backgroundColor: "#E5E5E5",
   }
 });
