@@ -5,10 +5,9 @@ import { Icon, Input } from "react-native-elements";
 import { ScreenWidth } from "react-native-elements/dist/helpers";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { FontAwesome } from "react-native-vector-icons";
-import deviceStorage from '../utils/deviceStorage'
+import deviceStorage from "../utils/deviceStorage";
 
 const image = require("../assets/images/login-background.png");
-
 
 const Login = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -18,11 +17,14 @@ const Login = ({ navigation }) => {
     axios
       .post("http://localhost:8080/api/auth/login", { username, password })
       .then((response) => {
-        console.log(response.data)
+        console.log(response.data);
         deviceStorage.saveItem("token", response.data.token);
         navigation.navigate("home");
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        alert("Giriş yapılamadı!");
+      });
   };
 
   useLayoutEffect(() => {
@@ -66,9 +68,9 @@ const Login = ({ navigation }) => {
         <View style={styles.footer}>
           <View style={styles.register}>
             <Text style={styles.registerText}>Yeni misiniz?</Text>
-            <TouchableOpacity onPress={()=>navigation.navigate("register")}>
-            <Text style={styles.registerTextBold}> Kaydolun</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("register")}>
+              <Text style={styles.registerTextBold}> Kaydolun</Text>
+            </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.loginBtn} onPress={login}>
             <Text style={styles.loginText}>Giriş</Text>
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
   registerTextBold: {
     color: "white",
     fontSize: 17,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   loginBtn: {
     borderWidth: 1.5,
