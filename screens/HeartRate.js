@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { ScreenHeight } from "react-native-elements/dist/helpers";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ProfileCard from "../components/Card/ProfileCard";
+import HeartGraph from "../components/HeartRate/HeartGraph";
 import ProfileHeader from "../components/ProfileHeader";
 
 const HeartRate = ({navigation}) => {
@@ -15,6 +16,7 @@ const HeartRate = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <ProfileHeader header="Kalp Ritmin" smallHeader="Merhaba, Can 👋" />
       <ProfileCard />
+      <HeartGraph />
     </SafeAreaView>
   );
 };
