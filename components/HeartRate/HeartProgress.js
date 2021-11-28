@@ -19,8 +19,7 @@ const HeartProgress = () => {
   }, [progress]);
 
   return (
-    <View>
-      <View>
+    <View style={styles.container}>
         <ProgressCircle
           percent={progress}
           radius={80}
@@ -35,7 +34,6 @@ const HeartProgress = () => {
             <Text style={styles.regularText}>bpm</Text>
           </View>
         </ProgressCircle>
-      </View>
     </View>
   );
 };
@@ -43,6 +41,9 @@ const HeartProgress = () => {
 export default HeartProgress;
 
 const styles = StyleSheet.create({
+  container:{
+    marginTop: 10,
+  },
   progressInput: {
     alignItems: "center",
     justifyContent: "space-evenly",

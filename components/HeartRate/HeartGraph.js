@@ -21,5 +21,7 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 30,
     justifyContent: "center",
     alignItems: "center",
+    bottom: 0,
+    marginBottom: Platform.OS === "ios" ? 0 : 15
   },
 });
