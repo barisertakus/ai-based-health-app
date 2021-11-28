@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   header: {
     paddingLeft: 20,
     fontSize: 35,
-    fontWeight: "700",
+    fontWeight: "600",
     color: "#2F80ED",
   },
   inputs: {
