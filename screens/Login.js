@@ -19,7 +19,8 @@ const Login = ({ navigation }) => {
       .post("http://localhost:8080/api/auth/login", { username, password })
       .then((response) => {
         console.log(response.data)
-        deviceStorage.saveItem("token", response.data.token)
+        deviceStorage.saveItem("token", response.data.token);
+        navigation.navigate("home");
       })
       .catch((error) => console.log(error));
   };

@@ -18,9 +18,6 @@ const Profile = ({ navigation }) => {
         <ProfileCard />
         <AgeCard />
         <ProfileStats />
-        {/* -cards- */}
-        {/* age card */}
-        {/* heart rate cards */}
       </ScrollView>
     </SafeAreaView>
   );
