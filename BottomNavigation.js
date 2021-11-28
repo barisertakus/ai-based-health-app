@@ -2,7 +2,6 @@ import React from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Profile from "./screens/Profile";
-import Screen2 from "./screens/Screen2";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { View } from "react-native";
 import HeartRate from "./screens/HeartRate";
@@ -15,7 +14,7 @@ const BottomNavigation = () => {
   return (
     <View style={{ flex: 1, backgroundColor: "#E5E5E5" }}>
       <Tab.Navigator
-        initialRouteName="screen1"
+        initialRouteName="heartrate"
         screenOptions={{
           tabBarActiveTintColor: "white",
           tabBarShowLabel: false,
@@ -43,7 +42,7 @@ const BottomNavigation = () => {
         />
         <Tab.Screen
           name="screen2"
-          component={Screen2}
+          component={HeartRate}
           options={{
             tabBarLabel: "screen2",
             tabBarIcon: ({ color }) => (
