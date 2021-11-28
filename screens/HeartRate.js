@@ -14,7 +14,7 @@ const HeartRate = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ProfileHeader header="Kalp Ritmin" smallHeader="Merhaba, Can 👋" />
+      <ProfileHeader header="Kalp Ritmin" smallHeader="Merhaba, Can 👋" navigation={navigation} />
       <ProfileCard />
       <View style={styles.heartProgress}><HeartProgress /></View>
       <HeartGraph />

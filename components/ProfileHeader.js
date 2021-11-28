@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-const ProfileHeader = ({ header, smallHeader }) => {
+const ProfileHeader = ({ header, smallHeader, navigation }) => {
   return (
     <View style={styles.header}>
       <View>
@@ -10,7 +10,7 @@ const ProfileHeader = ({ header, smallHeader }) => {
         <Text style={styles.headerText}>{header}</Text>
       </View>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>navigation.navigate("login")}>
         <Icon name="segment" size={30} />
       </TouchableOpacity>
     </View>

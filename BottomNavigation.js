@@ -5,6 +5,7 @@ import Profile from "./screens/Profile";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { View } from "react-native";
 import HeartRate from "./screens/HeartRate";
+import { Platform } from "react-native";
 
 const Tab = createBottomTabNavigator();
 
@@ -20,7 +21,7 @@ const BottomNavigation = () => {
           tabBarShowLabel: false,
           tabBarStyle: {
             backgroundColor: "#2D14C4",
-            marginBottom: 45,
+            marginBottom: Platform.OS === "ios" ? 45 : 25,
             marginHorizontal: "3%",
             overflow: "hidden",
             borderRadius: 50,
