@@ -14,7 +14,7 @@ const Profile = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <ProfileHeader />
+        <ProfileHeader header="Profil" />
         <ProfileCard />
         <AgeCard />
         <ProfileStats />
