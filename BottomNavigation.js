@@ -3,9 +3,9 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Profile from "./screens/Profile";
 import Screen2 from "./screens/Screen2";
-import Screen1 from "./screens/Screen1";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { View } from "react-native";
+import HeartRate from "./screens/HeartRate";
 
 const Tab = createBottomTabNavigator();
 
@@ -27,12 +27,13 @@ const BottomNavigation = () => {
             borderRadius: 50,
             height: 80,
             paddingBottom: 0,
+            borderTopWidth: 0
           },
         }}
       >
         <Tab.Screen
-          name="screen1"
-          component={Screen1}
+          name="heartrate"
+          component={HeartRate}
           options={{
             tabBarLabel: "Home",
             tabBarIcon: ({ color }) => (
@@ -53,7 +54,7 @@ const BottomNavigation = () => {
 
         <Tab.Screen
           name="Account"
-          component={Screen1}
+          component={HeartRate}
           options={{
             tabBarLabel: "Account",
             tabBarIcon: ({ color }) => (
