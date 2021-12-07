@@ -24,7 +24,7 @@ const Register = ({ navigation }) => {
 
   const signup = () => {
     axios
-      .post("http://localhost:8080/api/auth/signup", { name,email,username, password })
+      .post("http://ai-based-health.herokuapp.com/api/auth/signup", { name,email,username, password })
       .then((response) => {
         alert("Kayıt Başarılı!")
         navigation.goBack();

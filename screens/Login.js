@@ -15,7 +15,7 @@ const Login = ({ navigation }) => {
 
   const login = () => {
     axios
-      .post("http://localhost:8080/api/auth/login", { username, password })
+      .post("http://ai-based-health.herokuapp.com/api/auth/login", { username, password })
       .then((response) => {
         console.log(response.data);
         deviceStorage.saveItem("token", response.data.token);
