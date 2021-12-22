@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { View } from "react-native";
 import HeartRate from "./screens/HeartRate";
 import { Platform } from "react-native";
+import Tools from "./screens/Tools";
 
 const Tab = createBottomTabNavigator();
 
@@ -42,8 +43,8 @@ const BottomNavigation = () => {
           }}
         />
         <Tab.Screen
-          name="screen2"
-          component={HeartRate}
+          name="googlefit"
+          component={GoogleFitScreen}
           options={{
             tabBarLabel: "screen2",
             tabBarIcon: ({ color }) => (
@@ -53,10 +54,10 @@ const BottomNavigation = () => {
         />
 
         <Tab.Screen
-          name="Account"
-          component={HeartRate}
+          name="tools"
+          component={Tools}
           options={{
-            tabBarLabel: "Account",
+            tabBarLabel: "Tools",
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="compass" color={color} size={30} />
             ),

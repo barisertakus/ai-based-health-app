@@ -5,6 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack"
 import Home from './screens/Home';
 import Login from './screens/Login'
 import Register from './screens/Register';
+import QrCodeScreen from './screens/QrCodeScreen';
 
 const Stack = createStackNavigator();
 
@@ -14,7 +15,8 @@ const RootNavigation = () => {
       <Stack.Navigator initialRouteName="home">
         <Stack.Screen component={Login} name="login" />
         <Stack.Screen component={Register} name="register" />
-        <Stack.Screen component={Home} name="home" />
+        <Stack.Screen component={QrCodeScreen} name='qrcode' options={{title:"İlaç Tanıma Servisi"}} />
+        <Stack.Screen component={Home} name="home" options={{title: "Anasayfa"}} />
       </Stack.Navigator>
     </NavigationContainer>
   )
