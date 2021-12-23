@@ -20,6 +20,12 @@ const Tools = ({ navigation }) => {
         >
           <Text style={styles.btnText}>İlaç Okuma Servisi</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("disease")}
+        >
+          <Text style={styles.btnText}>Hastalık Tanıma Servisi</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -50,6 +56,7 @@ const styles = StyleSheet.create({
     padding: 20,
     margin: 10,
     marginHorizontal: 30,
+    borderRadius: 15,
   },
   btnText: {
     fontSize: 18,

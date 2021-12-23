@@ -6,6 +6,7 @@ import Home from './screens/Home';
 import Login from './screens/Login'
 import Register from './screens/Register';
 import QrCodeScreen from './screens/QrCodeScreen';
+import DiseaseScreen from './screens/DiseaseScreen';
 
 const Stack = createStackNavigator();
 
@@ -16,6 +17,7 @@ const RootNavigation = () => {
         <Stack.Screen component={Login} name="login" />
         <Stack.Screen component={Register} name="register" />
         <Stack.Screen component={QrCodeScreen} name='qrcode' options={{title:"İlaç Tanıma Servisi"}} />
+        <Stack.Screen component={DiseaseScreen} name='disease' />
         <Stack.Screen component={Home} name="home" options={{title: "Anasayfa"}} />
       </Stack.Navigator>
     </NavigationContainer>
