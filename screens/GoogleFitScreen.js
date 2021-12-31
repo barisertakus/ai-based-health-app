@@ -1,17 +1,30 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Button, ScrollView } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Text,
+  View,
+  ScrollView,
+  Platform,
+  TouchableOpacity,
+} from "react-native";
 import axios from "axios";
 import * as Google from "expo-auth-session/providers/google";
 import deviceStorage from "../utils/deviceStorage";
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+import { Button, Input } from "react-native-elements";
+import { useLayoutEffect } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function GoogleFitScreen() {
-  const [reqError, setReqError] = useState("");
-  const [authData, setAuthData] = useState({});
-  const [token, setToken] = useState("");
-  const [data, setData] = useState(0);
-  const [googleToken, setGoogleToken] = useState("");
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
+export default function GoogleFitScreen({ navigation }) {
   const [request, response, promptAsync] = Google.useAuthRequest({
     expoClientId:
       "1053050140828-0jt8ok31he2a0me7vfkg8ppgivs3f69m.apps.googleusercontent.com",
@@ -45,6 +58,79 @@ export default function GoogleFitScreen() {
     ],
   });
 
+  const [reqError, setReqError] = useState("");
+  const [authData, setAuthData] = useState({});
+  const [token, setToken] = useState("");
+  const [data, setData] = useState(0);
+  const [googleToken, setGoogleToken] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const [title, setTitle] = useState("Merhaba");
+  const [body, setBody] = useState("Adım sayım ");
+  const [emoji, setEmoji] = useState("");
+  const [sendTo, setSendTo] = useState("");
+  // const [title, setTitle] = useState("");
+  // const [title, setTitle] = useState("");
+
+  const [users, setUsers] = useState([]);
+  const [googleUser, setGoogleUser] = useState({});
+
+  const handleSetSendUser = (user) => {
+    setSendTo(user.expoNotificationToken);
+  };
+
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+  // useEffect(() => {
+  //   if (googleUser && expoPushToken){
+  //     console.log(googleUser.id)
+  //     console.log(expoPushToken)
+  //     axios
+  //     .post("http://192.168.1.100:8080/api/googleUser/updateTokenById?id=" +
+  //         googleUser.id +
+  //         "&token=" +
+  //         expoPushToken
+  //     )
+  //     .then((response) => console.log(response))
+  //     .catch((error) => console.log(error));
+  //   }
+
+  // }, [googleUser, expoPushToken]);
+
+  useLayoutEffect(()=>{
+    navigation.setOptions({
+      headerShown: false
+    })
+  },[])
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+
+    // This listener is fired whenever a notification is received while the app is foregrounded
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
   useEffect(() => {
     if (response?.type === "success") {
       const { authentication } = response;
@@ -60,6 +146,7 @@ export default function GoogleFitScreen() {
   useEffect(() => {
     if (googleToken) {
       getSteps();
+      getGoogleUser();
     }
   }, [googleToken]);
 
@@ -69,6 +156,17 @@ export default function GoogleFitScreen() {
       .then((response) => (response ? setGoogleToken(response) : null))
       .catch((error) => console.log(error));
   }, []);
+
+  useEffect(() => {
+    getSteps();
+  }, [navigation]);
+
+  const getGoogleUser = () => {
+    axios
+      .get("https://www.googleapis.com/oauth2/v2/userinfo", headerRequest)
+      .then((response) => setGoogleUser(response.data))
+      .catch((error) => console.log(error));
+  };
 
   // useEffect(()=>{
   //   setInterval(() => handleTime(), 5000);
@@ -133,6 +231,7 @@ export default function GoogleFitScreen() {
 
   // testId : 102220722962991557000
   const getSteps = () => {
+    setLoading(true);
     try {
       axios
         .post(
@@ -144,10 +243,12 @@ export default function GoogleFitScreen() {
           const data = response.data;
           const totalSteps = calculateSteps(data);
           setData(totalSteps);
+          setLoading(false);
         })
         .catch((error) => {
           console.log("GoogleUserReq error: ", error);
           setReqError(error);
+          setLoading(false);
         });
     } catch (error) {
       console.log("GoogleUserReq error: ", error);
@@ -155,32 +256,187 @@ export default function GoogleFitScreen() {
     }
   };
 
+  useEffect(() => {
+    axios
+      .get("http://192.168.1.100:8080/api/googleUser/getAll")
+      .then((response) => setUsers(response.data))
+      .catch((error) => console.log(error));
+  }, []);
+
   return (
-    <View>
-      <Text
+    <SafeAreaView>
+      <View
         style={{
-          fontWeight: "bold",
+          flexDirection: "row",
+          justifyContent: "center",
+          paddingVertical: 10,
         }}
       >
-        Signed user
-      </Text>
+        <Text style={{ fontWeight: "bold", fontSize: 30 }}>
+          {loading ? "Loading..." : data}
+        </Text>
+      </View>
+      <Input placeholder="Title" value={title} disabled />
+      <Input
+        placeholder="Adım Sayım"
+        value={body + data + " " + emoji}
+        disabled
+        disabledInputStyle={{ color: "black" }}
+      />
+      <ScrollView horizontal>
+        {["🤣", "👍", "😭", "🙏", "😘", "🥰", "😍", "😊"].map((emoji,i) => {
+          return (
+            <TouchableOpacity
+              style={{ margin: 5, marginHorizontal: 10 }}
+              onPress={() => setEmoji(emoji)}
+              key={i}
+            >
+              <Text style={{ fontSize: 30 }}>{emoji}</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+
+      <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        <Button
+          title="Send Message"
+          buttonStyle={{
+            backgroundColor: "rgba(78, 116, 289, 1)",
+            borderRadius: 10,
+          }}
+          containerStyle={{
+            width: 200,
+            marginHorizontal: 50,
+            marginVertical: 10,
+          }}
+          onPress={() =>
+            sendPushNotification(sendTo, title, body + data + " " + emoji)
+          }
+        />
+      </View>
 
       <ScrollView style={{ height: 200 }}>
-        <Text style={{ fontWeight: "bold", fontSize: 30 }}>{data}</Text>
+        {users.map((user, i) => {
+          return (
+            <TouchableOpacity
+              style={{
+                backgroundColor: "orange",
+                margin: 5,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => handleSetSendUser(user)}
+              key={i}
+            >
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: "600",
+                  color: "white",
+                  margin: 5,
+                  marginVertical: 10,
+                }}
+              >
+                {user.name}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
-      <Text style={{ fontWeight: "bold", fontSize: 30 }}>
-        TimeMillis : {time}
-      </Text>
-      <Button
-        disabled={!request}
-        title="Sign in"
-        onPress={() => promptAsync()}
-      />
 
-      <Button title="GET STEPS!" onPress={() => getSteps()} />
-      <Button title="GET TIME" onPress={handleTime} />
+      {/* <Text style={{ fontWeight: "bold", fontSize: 30 }}>
+        TimeMillis : {time}
+      </Text> */}
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Button
+          disabled={!request}
+          title="Google Sign In"
+          onPress={() => promptAsync()}
+          buttonStyle={{
+            borderRadius: 10,
+          }}
+          containerStyle={{
+            width: "100%",
+            marginHorizontal: 50,
+            marginVertical: 10,
+            paddingHorizontal: 20,
+          }}
+        />
+
+        <Button
+          title="Refresh Steps!"
+          onPress={() => getSteps()}
+          buttonStyle={{
+            borderRadius: 10,
+          }}
+          containerStyle={{
+            width: "100%",
+            marginHorizontal: 50,
+            marginVertical: 10,
+            paddingHorizontal: 20,
+          }}
+        />
+      </View>
+      {/* <Button title="GET TIME" onPress={handleTime} style={{margin:10}} /> */}
 
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
+}
+
+async function sendPushNotification(expoPushToken, title, body) {
+  const message = {
+    to: expoPushToken,
+    sound: "default",
+    title: title,
+    body: body,
+    data: { someData: "goes here" },
+  };
+  //😖
+  await fetch("https://exp.host/--/api/v2/push/send", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Accept-encoding": "gzip, deflate",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(message),
+  });
+}
+
+async function registerForPushNotificationsAsync() {
+  let token;
+  if (Constants.isDevice) {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log(token);
+  } else {
+    alert("Must use physical device for Push Notifications");
+  }
+
+  if (Platform.OS === "android") {
+    Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+
+  return token;
 }
