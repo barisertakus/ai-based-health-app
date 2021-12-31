@@ -3,15 +3,15 @@ import React from "react";
 import { useState } from "react";
 import { useLayoutEffect } from "react";
 import {
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Autocomplete from "../components/Autocomplete";
-
+import DiseaseCard from "../components/DiseaseCard";
 
 const list = [
   { id: 1, title: "Kaşıntı" },
@@ -34,7 +34,60 @@ const DiseaseScreen = ({ navigation }) => {
     navigation.setOptions({ headerShown: false });
   }, []);
 
+  const [selections, setSelections] = useState([]);
+  const [diseaseList, setDiseaseList] = useState(list);
+
+  const [prediction, setPrediction] = useState([]);
+
   const [result, setResult] = useState("");
+
+  const formatPrediction = () => {
+    let tempList = [];
+    for (let i = 0; i < 132; i++) {
+      for (let j = 0; j < selections.length; j++) {
+        if (i === selections[j]?.id - 1) {
+          tempList[i] = 1;
+        } else {
+          tempList[i] = 0;
+        }
+      }
+    }
+
+    axios
+      .get(
+        "https://flask-api-medicine.herokuapp.com/predict/?predict=" + tempList
+      )
+      .then((response) => setResult(response.data.Message))
+      .catch((error) => console.log(error));
+  };
+
+  // const handleSubmit = () => {
+  //   axios
+  //     .get(
+  //       "https://flask-api-medicine.herokuapp.com/predict/?predict=0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+  //     )
+  //     .then((response) => setResult(response.data.Message))
+  //     .catch((error) => console.log(error));
+  // };
+
+  const handleSelect = (select) => {
+    if (select) {
+      setSelections([...selections, select]);
+      setDiseaseList(diseaseList.filter((disease) => disease.id !== select.id));
+    }
+  };
+
+  const handlePress = (remove) => {
+    if (remove) {
+      setSelections(
+        selections.filter((selection) => selection.id !== remove.id)
+      );
+
+      let list = [...diseaseList];
+      list.splice(remove.id - 1, 0, remove);
+      setDiseaseList(list);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -47,28 +100,35 @@ const DiseaseScreen = ({ navigation }) => {
             </Text>
           </View>
           <View style={styles.autocomplete}>
-            <Autocomplete list={list} />
+            <Autocomplete list={diseaseList} handleSelect={handleSelect} />
           </View>
         </View>
         <View style={{ flex: 0.5 }}>
           <View style={styles.selections}>
             <ScrollView>
-              <View style={styles.selection}>
-                <Text style={styles.selectionText}>Test</Text>
-              </View>
-              <View style={styles.selection}>
-                <Text style={styles.selectionText}>Test</Text>
-              </View>
-              <View style={styles.selection}>
-                <Text style={styles.selectionText}>Test</Text>
-              </View>
-              <View style={styles.selection}>
-                <Text style={styles.selectionText}>Test</Text>
-              </View>
+              {selections.map((selection) => {
+                return (
+                  <DiseaseCard
+                    key={selection.id}
+                    selection={selection}
+                    handlePress={handlePress}
+                  />
+                );
+              })}
             </ScrollView>
           </View>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.btnText}>GÖNDER</Text>
+          <View style={{ alignItems: "center", paddingBottom: 10 }}>
+            <Text style={{ fontSize: 18 }}>
+              {result ? " HASTALIK : " + result : ""}
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => formatPrediction()}
+          >
+            <Text style={styles.btnText}>
+              GÖNDER {result ? " = " + result : ""}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -82,6 +142,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 20,
+    paddingBottom: 20,
   },
   header: {
     justifyContent: "center",
@@ -103,7 +164,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginHorizontal: 20,
     borderRadius: 20,
-    alignItems: "center"
+    alignItems: "center",
   },
   btnText: {
     fontSize: 20,
@@ -112,19 +173,5 @@ const styles = StyleSheet.create({
   },
   selections: {
     flex: 1,
-  },
-  selection: {
-    backgroundColor: "#2F2E41",
-    padding: 20,
-    margin: 5,
-    marginHorizontal: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 20,
-  },
-  selectionText: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "bold",
   },
 });
