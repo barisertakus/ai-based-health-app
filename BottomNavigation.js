@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { View } from "react-native";
 import HeartRate from "./screens/HeartRate";
 import { Platform } from "react-native";
+import GoogleFitScreen from "./screens/GoogleFitScreen";
 import Tools from "./screens/Tools";
 
 const Tab = createBottomTabNavigator();
