@@ -2,17 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Button, ScrollView } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import axios from "axios";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function QrCodeScreen() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [text, setText] = useState("Not yet scanned");
   const [result, setResult] = useState("");
-  const drugsApi = (qrCode) => {
+  const [error, setError] = useState("");
+  const drugsApi = (data) => {
     axios
-      .post("https://drugs-flask.herokuapp.com/", { barcode: text })
-      .then((response) => setResult(response.data))
-      .catch((error) => console.log("error"));
+      .post("https://drugs-flask.herokuapp.com/", { barcode: data })
+      .then((response) => setResult(response.data.Value))
+      .catch((error) => {console.log(error); setError(JSON.stringify(error))});
   };
 
   const askForCameraPermission = () => {
@@ -27,15 +29,16 @@ export default function QrCodeScreen() {
     askForCameraPermission();
   }, []);
 
-  useEffect(() => {
-    drugsApi();
-  }, [text]);
+  // useEffect(() => {
+  //   drugsApi();
+  // }, [text]);
 
   // What happens when we scan the bar code
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
     setText(data);
     console.log("Type: " + type + "\nData: " + data);
+    drugsApi(data)
   };
 
   // Check permissions and return the screens
@@ -64,17 +67,25 @@ export default function QrCodeScreen() {
       <View style={styles.barcodebox}>
         <BarCodeScanner
           onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-          style={{ height: 400, width: 400 }}
+          style={{ height: 400, width: 400,  }}
         />
       </View>
       <Text style={styles.maintext}>{text}</Text>
       {scanned && (
+        <SafeAreaView style={{flex : 1}}>
         <Button
           title={"Scan again?"}
           onPress={() => setScanned(false)}
           color="tomato"
         />
+        <ScrollView>
+          <Text>{(result && result.join(' ')) || error}</Text>
+        </ScrollView>
+        </SafeAreaView>
       )}
+      {
+       
+      }
     </View>
   );
 }
@@ -84,7 +95,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
   },
   maintext: {
     fontSize: 16,
@@ -92,11 +103,11 @@ const styles = StyleSheet.create({
   },
   barcodebox: {
     alignItems: "center",
-    justifyContent: "center",
-    height: 300,
-    width: 300,
+    justifyContent: "flex-start",
+    height: 350,
+    width: 350,
     overflow: "hidden",
-    borderRadius: 30,
-    backgroundColor: "#2D14C4",
+    marginTop: 30,
+    borderRadius : 10,
   },
 });
