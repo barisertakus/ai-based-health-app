@@ -61,6 +61,13 @@ const DiseaseScreen = ({ navigation }) => {
       .catch((error) => console.log(error));
   };
 
+  const clearPrediction = () => {
+    setPrediction([]);
+    setSelections([]);
+    setDiseaseList(list)
+    setResult("");
+  }
+
   // const handleSubmit = () => {
   //   axios
   //     .get(
@@ -103,7 +110,7 @@ const DiseaseScreen = ({ navigation }) => {
             <Autocomplete list={diseaseList} handleSelect={handleSelect} />
           </View>
         </View>
-        <View style={{ flex: 0.5 }}>
+        <View style={{ flex: 0.45 }}>
           <View style={styles.selections}>
             <ScrollView>
               {selections.map((selection) => {
@@ -119,15 +126,15 @@ const DiseaseScreen = ({ navigation }) => {
           </View>
           <View style={{ alignItems: "center", paddingBottom: 10 }}>
             <Text style={{ fontSize: 18 }}>
-              {result ? " HASTALIK : " + result : ""}
+              {result && " Yeniden denemek için tıklayın "}
             </Text>
           </View>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => formatPrediction()}
+            onPress={() => !result ? formatPrediction() : clearPrediction()}
           >
             <Text style={styles.btnText}>
-              GÖNDER {result ? " = " + result : ""}
+              {result ? "HASTALIK : " + result : "GÖNDER"}
             </Text>
           </TouchableOpacity>
         </View>
