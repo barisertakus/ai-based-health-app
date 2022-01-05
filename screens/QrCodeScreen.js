@@ -1,20 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button, ScrollView } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Button,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import axios from "axios";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function QrCodeScreen() {
+export default function QrCodeScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [text, setText] = useState("Not yet scanned");
   const [result, setResult] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const drugsApi = (data) => {
+    setLoading(true);
     axios
       .post("https://drugs-flask.herokuapp.com/", { barcode: data })
-      .then((response) => setResult(response.data.Value))
-      .catch((error) => {console.log(error); setError(JSON.stringify(error))});
+      .then((response) => {
+        setResult(response.data.Value);
+        setLoading(false);
+        navigation.navigate("medicine", { medicine: response.data.Value, head: response.data.head });
+      })
+      .catch((error) => {
+        console.log(error);
+        setError(JSON.stringify(error));
+        setLoading(false);
+      });
   };
 
   const askForCameraPermission = () => {
@@ -27,6 +44,7 @@ export default function QrCodeScreen() {
   // Request Camera Permission
   useEffect(() => {
     askForCameraPermission();
+    // drugsApi(8699536510019)
   }, []);
 
   // useEffect(() => {
@@ -38,7 +56,7 @@ export default function QrCodeScreen() {
     setScanned(true);
     setText(data);
     console.log("Type: " + type + "\nData: " + data);
-    drugsApi(data)
+    drugsApi(data);
   };
 
   // Check permissions and return the screens
@@ -67,25 +85,28 @@ export default function QrCodeScreen() {
       <View style={styles.barcodebox}>
         <BarCodeScanner
           onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-          style={{ height: 400, width: 400,  }}
+          style={{ height: 400, width: 400 }}
         />
       </View>
-      <Text style={styles.maintext}>{text}</Text>
+      <Text style={styles.maintext}>
+        {scanned && "İlaç Barkodu :"} {text}
+      </Text>
       {scanned && (
-        <SafeAreaView style={{flex : 1}}>
-        <Button
-          title={"Scan again?"}
-          onPress={() => setScanned(false)}
-          color="tomato"
-        />
-        <ScrollView>
+        <SafeAreaView style={{ flex: 1 }}>
+          <Button
+            title={"Yeniden tara?"}
+            onPress={() => setScanned(false)}
+            color="tomato"
+          />
+          {/* <ScrollView>
           <Text>{(result && result.join(' ')) || error}</Text>
-        </ScrollView>
+        </ScrollView> */}
+          <View style={[styles.loadingContainer, styles.horizontal]}>
+            <Text>{loading && "İlaç detayları yükleniyor..."}</Text>
+            <ActivityIndicator size="large" color="#00ff00" />
+          </View>
         </SafeAreaView>
       )}
-      {
-       
-      }
     </View>
   );
 }
@@ -108,6 +129,13 @@ const styles = StyleSheet.create({
     width: 350,
     overflow: "hidden",
     marginTop: 30,
-    borderRadius : 10,
+    borderRadius: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  horizontal: {
+    padding: 10,
   },
 });
